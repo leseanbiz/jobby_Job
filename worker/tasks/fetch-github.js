@@ -43,21 +43,21 @@ const jrJobs = allJobs.filter(job => {
 
 
   //sort & remove dupes
-  const sortedJobs = jrJobs;
-  sortedJobs.sort(function (a,b) {
-    return new Date(b.created_at) - new Date(a.created_at);
-  })
-  const sortedAndDedupedJobs = sortedJobs.filter((job, i) => {
-    console.log(sortedJobs.id);
-    const testIndex = i + 1;
-    if(i === sortedJobs.length) {
-      testIndex = sortedJobs.length;
-    }
-    // if(job.id === )
-    return job.id !== sortedJobs[testIndex].id ? true : false; 
-  })
-  console.log([...new Set(jrJobs)].sort().length);
-  console.log("sortedAndDedupedJobs.length: ", sortedAndDedupedJobs.length)
+  // const sortedJobs = jrJobs;
+  // sortedJobs.sort(function (a,b) {
+  //   return new Date(b.created_at) - new Date(a.created_at);
+  // })
+  // const sortedAndDedupedJobs = sortedJobs.filter((job, i) => {
+  //   console.log(sortedJobs[i].id);
+  //   const testIndex = i + 1;
+  //   if(i === sortedJobs.length) {
+  //     testIndex = sortedJobs.length;
+  //   }
+  //   // if(job.id === )
+  //   return job.id !== sortedJobs[testIndex].id ? true : false; 
+  // })
+  // console.log([...new Set(jrJobs)].sort().length);
+  // console.log("sortedAndDedupedJobs.length: ", sortedAndDedupedJobs.length)
 
 
 //set in redis
