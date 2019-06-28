@@ -1,6 +1,6 @@
 import React from 'react';
-import { Typography, Paper, Button } from '@material-ui/core';
-import { differenceInHours, differenceInDays, differenceInMinutes } from 'date-fns';
+import { Typography, Paper } from '@material-ui/core';
+import { differenceInDays, differenceInMinutes } from 'date-fns';
 
 export default function Job({ job, onClick }) {
 
@@ -11,7 +11,7 @@ export default function Job({ job, onClick }) {
     const minutes = Math.floor(differenceInMinutes(current, other));
     let hours = Math.floor(differenceInDays(current, other));
     const days = differenceInDays(current, other);
-    console.log(days)
+    // console.log(days)
     if(minutes > 60 && hours < 24) {
       return `${hours} hours and ${minutes%60} minutes ago`;  
     }
@@ -39,6 +39,7 @@ export default function Job({ job, onClick }) {
         <Typography variant="h6">{job.company}</Typography>
         <Typography variant="h5">{job.title}</Typography>
         <Typography>{job.location}</Typography>
+        <Typography>{job.type}</Typography>
       </div>
       <div>
         <Typography>{`${computeTimeDifference(today, postedDate)}`}</Typography>
