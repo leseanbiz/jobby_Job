@@ -24,7 +24,7 @@ function App() {
       fetchJobs();
   },[]);
 
-  console.log("jobsList App: ", jobsList)
+  // console.log("jobsList App: ", jobsList)
   
   return (
     //add suspense/lazy loading

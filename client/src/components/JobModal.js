@@ -46,7 +46,7 @@ export default function JobModal({job, open, handleClose}) {
             Apply
           </Button>
          </a>
-          <Button onClick={handleClose} color="primary">
+          <Button onClick={() => handleClose()} color="primary">
             Close
           </Button>
         </DialogActions>

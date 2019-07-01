@@ -4,6 +4,7 @@ import { Typography } from '@material-ui/core';
 import JobModal from '../components/JobModal';
 import Stepper from '../components/Stepper';
 import Switch from '../components/Switch';
+import CheckboxesGroup from '../components/Checkboxes';
 
 class Jobs extends Component {
   constructor(props) {
@@ -13,67 +14,54 @@ class Jobs extends Component {
                    switchState: {
                     partTime: true,
                     fullTime: true,
-                    contract: false,
+                    contract: true,
                   },
                   activeStep: 0,
                   jobsData: this.props.jobs
     }
     this.handleChange = this.handleChange.bind(this);
+    this.filterJobsbyType = this.filterJobsbyType.bind(this);
   }
 
-  componentWillMount() {
-    // filterJobsbyType(jobs, name);
-    this.setState({
-      jobsData: this.props.jobs
-    })
+  componentDidUpdate(prevProps, prevState) {
+    // console.log("total jobs: ", this.props.jobs.length)
+    if(prevProps.jobs !== this.props.jobs) {
+      this.setState({ jobsData: this.props.jobs });
+    }
   }
 
-  componentDidMount() {
-    console.log("jobs:", this.props.jobs)
-    // filterJobsbyType(jobs, name);
-    this.setState({
-      jobsData: this.props.jobs
-    })
+  filterJobsbyType (name, event) {
+    let partTimeJobs = this.props.jobs.filter(job => job.type === 'Part Time');
+    let fullTimeJobs = this.props.jobs.filter(job => job.type === 'Full Time');
+    let contractJobs = this.props.jobs.filter(job => job.type === 'Contract')
+    // console.log("part time total :", this.props.jobs.filter(job => job.type === 'Part Time'));
+    // console.log("full time total :", this.props.jobs.filter(job => job.type === 'Full Time'));
+    // console.log("contract total :", this.props.jobs.filter(job => job.type === 'Contract'));
+
+    if(event === false) {
+      if(name === "partTime"){ 
+        partTimeJobs = [];
+      }
+
+      if(name === "fullTime" ){
+        fullTimeJobs = [];
+      }
+
+      if(name === "contract"){
+        contractJobs = [];
+      }
+    }
+
+    // console.log([...partTimeJobs, ...fullTimeJobs, ...contractJobs])
+    this.setState({ jobsData: [...partTimeJobs, ...fullTimeJobs, ...contractJobs]});
+
   }
-
-  // loadState(jobs) {
-  //   this.setState({
-  //      jobsData: jobs
-  //   })
-  // }
-  // filterJobsbyType (jobs, name) {
-  //   // console.log("function called", name);
-  //   // let partTimeJobs = [];
-  //   // let fullTimeJobs = [];
-  //   // let contractJobs = [];
-  //   // let filteredJobs = [];
-
-  //   if(name === 'partTime') {
-  //     // partTimeJobs = jobs.filter(job => switchState.partTime === true && job.type === typeNamesArr[0]);
-  //     setJobsData(jobs.filter(job => switchState.partTime === true && job.type === typeNamesArr[0]));
-  //     // console.log('switch case: ', name, switchState.name, jobs[0].type);
-  //   }
-  //   if(name === 'fullTime'){
-  //     // fullTimeJobs = jobs.filter(job => switchState.fullTime === true && job.type === typeNamesArr[1]);
-  //     setJobsData(jobs.filter(job => switchState.fullTime === true && job.type === typeNamesArr[1]));
-  //     // console.log('switch case: ', name, switchState.name, jobs[0].type);
-  //   }        
-
-  //   if(name === 'contract') {
-  //     // contractJobs = jobs.filter(job => switchState.contract === true && job.type === typeNamesArr[2]);
-  //     setJobsData(jobs.filter(job => switchState.contract === true && job.type === typeNamesArr[2]));
-  //     // console.log('switch case: ', name, switchState.name, jobs[0].type);
-  //   }
-    
-  //   return jobsData.length === 0 ? jobs : jobsData;
-  // }
 
       handleChange(name, event) {
-        // setSwitchState({ ...switchState, [name]: event.target.checked });
         this.setState({ 
           switchState: {...this.state.switchState, [name]: event.target.checked}
         });
-        // filterJobsbyType(this.props.jobs, name);
+        this.filterJobsbyType(name, event.target.checked);
       };
 
       //modal open and close
@@ -109,16 +97,14 @@ class Jobs extends Component {
       }
   
   render() {
-    console.log("jobsData:", this.state.jobsData);
-    console.log("jobs render:", this.props.jobs)
+    const typeNamesArr = ["Part Time", "Full Time", "Contract"];
     const {open, selectedJob, switchState, activeStep, jobsData } = this.state;
-    const numJobs = this.props.jobs.length;
+    const numJobs = jobsData.length;
     const numPages = Math.ceil(numJobs/50);
-    const jobsOnPage = this.props.jobs.slice( activeStep * 50, (activeStep * 50) + 50 );
+    const jobsOnPage = jobsData.slice( activeStep * 50, (activeStep * 50) + 50 );
     // console.log("switchState: ", switchState);
 
-    //switches
-    const typeNamesArr = ["Part Time", "Full Time", "Contract"];
+    
     
     return (
       <div className='jobs'>
@@ -142,7 +128,12 @@ class Jobs extends Component {
         switchState={switchState}
         labelsArr={typeNamesArr}
       />
-            <Stepper 
+      <CheckboxesGroup
+        handleChange={this.handleChange} 
+        switchState={switchState}
+        labelsArr={typeNamesArr}
+      />
+      <Stepper 
         numPages={numPages} 
         activeStep={activeStep} 
         handleNext={() => this.handleNext()} 
