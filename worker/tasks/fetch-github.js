@@ -25,7 +25,7 @@ async function fetchGithub() {
 
 //filter algo
 const jrJobs = allJobs.filter(job => {
-  // console.log(job.created_at, job.id);
+  
  const jobTitle = job.title.toLowerCase();
  
  if (
@@ -41,12 +41,16 @@ const jrJobs = allJobs.filter(job => {
 
 });
 
+//set in redis
+ const success = await setAsync('github', JSON.stringify(jrJobs));
+ console.log({success}); 
+}
 
+module.exports = fetchGithub;
+
+
+  // const sortedJobs = sortJobs(jrJobs);
   //sort & remove dupes
-  // const sortedJobs = jrJobs;
-  // sortedJobs.sort(function (a,b) {
-  //   return new Date(b.created_at) - new Date(a.created_at);
-  // })
   // const sortedAndDedupedJobs = sortedJobs.filter((job, i) => {
   //   console.log(sortedJobs[i].id);
   //   const testIndex = i + 1;
@@ -59,16 +63,10 @@ const jrJobs = allJobs.filter(job => {
   // console.log([...new Set(jrJobs)].sort().length);
   // console.log("sortedAndDedupedJobs.length: ", sortedAndDedupedJobs.length)
 
-
-//set in redis
- // console.log('allJobs: ', allJobs.length, 'jobs');
- const success = await setAsync('github', JSON.stringify(jrJobs));
-//  console.log('SortedJobs id1: ', sortedJobs[0].id);
-//  console.log('JRJOBS id1: ', jrJobs[0].id);
-//  console.log('ALLJOBS: ', allJobs.length);
- console.log({success}); 
-}
-
-fetchGithub();
-
-module.exports = fetchGithub;
+  // async function sortJobs(jobs) {
+//   const sortedJobs = jobs;
+//   await sortedJobs.sort(function (a,b) {
+//     return new Date(b.created_at) - new Date(a.created_at);
+//   });
+//   return sortedJobs;
+// }
