@@ -4,6 +4,7 @@ import FormControl from '@material-ui/core/FormControl';
 import FormGroup from '@material-ui/core/FormGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Switch from '@material-ui/core/Switch';
+import { Typography } from '@material-ui/core';
 
 export default function SwitchesGroup({ handleChange, switchState, labelsArr }) {
 
@@ -18,7 +19,9 @@ const switches = labelsArr.map((el, i) => {
 
   return (
     <FormControl component="fieldset">
-      <FormLabel component="legend">Employment Type</FormLabel>
+      <Typography variant="h6">
+        Employment Type
+      </Typography>
       <FormGroup>
         {/* <FormControlLabel
           control={<Switch checked={switchState.partTime} onChange={handleChange('partTime')} value="partTime" />}
