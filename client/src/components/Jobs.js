@@ -1,10 +1,13 @@
 import React, { Component } from 'react';
 import Job from './Job'
-import { Typography } from '@material-ui/core';
+import { Typography, Container, Grid, Card, GridList, CssBaseline } from '@material-ui/core';
+import AppBar from '../components/AppBar';
 import JobModal from '../components/JobModal';
 import Stepper from '../components/Stepper';
 import Switch from '../components/Switch';
-import CheckboxesGroup from '../components/Checkboxes';
+import ReactMinimalPieChart from 'react-minimal-pie-chart';
+
+// import CheckboxesGroup from '../components/Checkboxes';
 
 class Jobs extends Component {
   constructor(props) {
@@ -23,143 +26,176 @@ class Jobs extends Component {
     this.filterJobsbyType = this.filterJobsbyType.bind(this);
   }
 
-  componentDidUpdate(prevProps, prevState) {
-    // console.log("total jobs: ", this.props.jobs.length)
+  //sort jobs by time posted
+
+  //add pie chart
+
+  //add remote switch
+
+  //add App bar for logo, title, found jobs
+
+  //stack remote jobs and switches to the left of jobsList
+
+
+
+  //pagination
+  handleNext() {
+    this.setState((prevState) => {
+      return {activeStep: prevState.activeStep + 1}
+    })
+    window.scrollTo(0, 0)
+  }
+
+  handleBack() {
+    this.setState((prevState) => {
+      return {activeStep: prevState.activeStep - 1}
+    });
+    window.scrollTo(0, 0)
+  }
+
+  // set jobsData state array
+  componentDidUpdate(prevProps) {
     if(prevProps.jobs !== this.props.jobs) {
       this.setState({ jobsData: this.props.jobs });
     }
   }
 
-  filterJobsbyType (name, event) {
+  //switch logic
+  filterJobsbyType (name, checked) {
     let partTimeJobs = this.props.jobs.filter(job => job.type === 'Part Time');
     let fullTimeJobs = this.props.jobs.filter(job => job.type === 'Full Time');
-    let contractJobs = this.props.jobs.filter(job => job.type === 'Contract')
-    // console.log("part time total :", this.props.jobs.filter(job => job.type === 'Part Time'));
-    // console.log("full time total :", this.props.jobs.filter(job => job.type === 'Full Time'));
-    // console.log("contract total :", this.props.jobs.filter(job => job.type === 'Contract'));
+    let contractJobs = this.props.jobs.filter(job => job.type === 'Contract');
 
-    if(event === false) {
-      if(name === "partTime"){ 
+    if(checked === false) {
+      if(name === "partTime") { 
         partTimeJobs = [];
       }
-
-      if(name === "fullTime" ){
+      if(name === "fullTime" ) {
         fullTimeJobs = [];
       }
-
-      if(name === "contract"){
+      if(name === "contract") {
         contractJobs = [];
       }
     }
-
-    // console.log([...partTimeJobs, ...fullTimeJobs, ...contractJobs])
-    this.setState({ jobsData: [...partTimeJobs, ...fullTimeJobs, ...contractJobs]});
-
+    this.setState({ jobsData: [...partTimeJobs, ...fullTimeJobs, ...contractJobs] });
   }
 
-      handleChange(name, event) {
-        this.setState({ 
-          switchState: {...this.state.switchState, [name]: event.target.checked}
-        });
-        this.filterJobsbyType(name, event.target.checked);
-      };
+  // switch event handler
+  handleChange(name, event) {
+    this.setState({ 
+      switchState: { ...this.state.switchState, [name]: event.target.checked }
+    });
+    this.filterJobsbyType(name, event.target.checked);
+  };
 
-      //modal open and close
-      handleModalOpen() {
-        this.setState({
-          open: true
-        })
-        // setOpen(true);
-      }
-  
-      handleModalClose() {
-        this.setState({
-          open: false
-        })
-        // setOpen(false);
-      }
-      
-      //pagination
-      handleNext() {
-        this.setState((prevState) => {
-          return {activeStep: prevState.activeStep + 1}
-        })
-        // setActiveStep(prevActiveStep => prevActiveStep + 1);
-        window.scrollTo(0, 0)
-      }
-  
-      handleBack() {
-        this.setState((prevState) => {
-          return {activeStep: prevState.activeStep - 1}
-        });
-        // setActiveStep(prevActiveStep => prevActiveStep - 1);
-        window.scrollTo(0, 0)
-      }
-  
+  //modal open and close
+  handleModalOpen() {
+    this.setState({
+      open: true
+    })
+  }
+
+  handleModalClose() {
+    this.setState({
+      open: false
+    })
+  }
+
   render() {
     const typeNamesArr = ["Part Time", "Full Time", "Contract"];
     const {open, selectedJob, switchState, activeStep, jobsData } = this.state;
     const numJobs = jobsData.length;
     const numPages = Math.ceil(numJobs/50);
     const jobsOnPage = jobsData.slice( activeStep * 50, (activeStep * 50) + 50 );
-    // console.log("switchState: ", switchState);
-
-    
+    const remoteJobs = jobsData.filter(job => job.location.includes("Remote"));
     
     return (
       <div className='jobs'>
-      <JobModal 
-        open={open} 
-        handleClose={() => this.handleModalClose()} 
-        job={selectedJob} 
-      />
-      <Typography variant="h4" component="h1">
-        Entry level software jobs
-      </Typography>
-      <Typography variant="h6">
-        Found {numJobs} Jobs
-        {/* that fit {searchCriteria} */}
-      </Typography>
-      <Typography variant="h6" component="h1">
-        Showing {activeStep * 50} - {(activeStep * 50) + 50}
-      </Typography>
-      <Switch 
-        handleChange={this.handleChange} 
-        switchState={switchState}
-        labelsArr={typeNamesArr}
-      />
-      <CheckboxesGroup
-        handleChange={this.handleChange} 
-        switchState={switchState}
-        labelsArr={typeNamesArr}
-      />
-      <Stepper 
-        numPages={numPages} 
-        activeStep={activeStep} 
-        handleNext={() => this.handleNext()} 
-        handleBack={() => this.handleBack()}
-      />
-      {
-        jobsOnPage.map(
-          ( job,i ) => <Job key={i} job={job} onClick={() => {
-                          this.handleModalOpen()
-                          // selectJob(job)
-                          this.setState({
-                            selectedJob: job
-                          });
-                        }}
-                        />
-        )
-      }
-      <div>
-        Page { activeStep + 1 } of { numPages }
-      </div>
-      <Stepper 
-        numPages={numPages} 
-        activeStep={activeStep} 
-        handleNext={() => this.handleNext()} 
-        handleBack={() => this.handleBack()}
-      />
+        {/* <CssBaseline /> */}
+        <JobModal 
+          open={open} 
+          handleClose={() => this.handleModalClose()} 
+          job={selectedJob} 
+        />
+        <AppBar numJobs={numJobs} />
+          <Grid container>
+            <Grid item xs={12}>
+              <Stepper 
+                numPages={numPages} 
+                activeStep={activeStep} 
+                handleNext={() => this.handleNext()} 
+                handleBack={() => this.handleBack()}
+              />
+              <Typography variant="h6" component="h1">
+                Showing {activeStep * 50} - {(activeStep * 50) + 50}
+              </Typography>
+            </Grid>
+          </Grid>
+          <Grid container spacing={3}>
+              <Grid item xs={12} sm={12} md={4} lg={4}>
+                <Card>
+                  <Switch 
+                    handleChange={this.handleChange} 
+                    switchState={switchState}
+                    labelsArr={typeNamesArr}
+                  />
+                </Card>
+                <br />
+                <Card>
+                  <Typography variant="h6">
+                    Remote jobs count
+                  </Typography>
+                  <ReactMinimalPieChart
+                    data={[
+                      {
+                        title: 'Remote',
+                        value: remoteJobs.length,
+                        color: '#E38627'
+                      },
+                      {
+                        title: 'Non-remote',
+                        value: (jobsData.length - remoteJobs.length),
+                        color: '#C13C37'
+                      }
+                    ]}
+                    lineWidth={15}
+                    rounded
+                    label
+                    labelStyle={{
+                      fontSize: '10px',
+                      fontFamily: 'sans-serif'
+                    }}
+                    style={{height:'200px'}}
+                    labelPosition={60}
+                    animate
+                  />
+                </Card>
+              </Grid>
+              <Grid item xs={12} sm={12} md={8} lg={8} className={"flex-col-scroll"}>
+                {
+                  jobsOnPage.map(
+                    ( job,i ) => <Job key={i} job={job} onClick={() => {
+                                    this.handleModalOpen()
+                                    this.setState({
+                                      selectedJob: job
+                                    });
+                                  }}
+                                  />
+                  )
+                }
+              </Grid>
+            </Grid>
+          <Grid item xs={12}>
+            <div>
+              Page { activeStep + 1 } of { numPages }
+            </div>
+            <Stepper 
+              numPages={numPages} 
+              activeStep={activeStep} 
+              handleNext={() => this.handleNext()} 
+              handleBack={() => this.handleBack()}
+            />
+          </Grid>
         
       </div>
     );

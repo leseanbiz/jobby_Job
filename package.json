@@ -13,6 +13,7 @@
     "cron": "^1.7.1",
     "express": "^4.17.1",
     "node-fetch": "^2.6.0",
+    "react-minimal-pie-chart": "^4.2.0",
     "redis": "^2.8.0"
   }
 }
